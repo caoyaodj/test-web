@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>欢迎页</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <!-- 导航栏 -->
+  <nav class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <span class="font-bold text-xl text-gray-900">用户系统</span>
+        </div>
+        <div class="flex items-center">
+          <button id="logoutBtn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md ml-4 transition-all duration-300">
+            退出登录
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主内容 -->
+  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+      <div class="text-center">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">欢迎回来，<span id="usernameDisplay">用户</span>！</h1>
+        <p class="text-gray-600 mb-6">这是您的个人主页</p>
+        
+        <div class="mt-8">
+          <a href="#" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105">
+            查看个人资料
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 页面加载时验证登录状态
+    document.addEventListener('DOMContentLoaded', async () => {
+      const response = await fetch('/api/home');
+      const data = await response.json();
+      
+      if (!data.success) {
+        // 未登录，跳转到登录页
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // 显示用户名
+      document.getElementById('usernameDisplay').textContent = data.user.username;
+    });
+    
+    // 退出登录
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      const response = await fetch('/api/logout', { method: 'POST' });
+      const data = await response.json();
+      
+      if (data.success) {
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
+</body>
+</html>

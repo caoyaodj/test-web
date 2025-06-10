@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>用户注册</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 300px; margin: 0 auto; padding: 20px; }
+    input, button { width: 100%; padding: 10px; margin: 10px 0; }
+    button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h2>用户注册</h2>
+  <form id="registerForm">
+    <input type="text" id="regUsername" placeholder="用户名" required>
+    <input type="password" id="regPassword" placeholder="密码" required>
+    <input type="password" id="confirmPassword" placeholder="确认密码" required>
+    <button type="submit">注册</button>
+  </form>
+  <p>已有账号？<a href="login.html">登录</a></p>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('regUsername').value;
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // 验证密码一致性
+      if (password !== confirmPassword) {
+        alert('两次输入的密码不一致！');
+        return;
+      }
+
+      // 发送注册请求
+      try {
+        const response = await fetch('http://localhost:3000/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert('注册成功！请登录');
+          window.location.href = 'login.html';
+        } else {
+          alert(data.error || '注册失败');
+        }
+      } catch (error) {
+        console.error('注册请求失败:', error);
+        alert('网络错误，请重试');
+      }
+    });
+  </script>
+</body>
+</html>
